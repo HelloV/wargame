@@ -36,11 +36,14 @@
             this.buttonExit = new System.Windows.Forms.Button();
             this.labelScore = new System.Windows.Forms.Label();
             this.panelPlayer_1 = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panelPlayer_2 = new System.Windows.Forms.Panel();
             this.tankRightHard = new System.Windows.Forms.PictureBox();
             this.tankLeftHard = new System.Windows.Forms.PictureBox();
             this.tankRightLight = new System.Windows.Forms.PictureBox();
             this.tankLeftLight = new System.Windows.Forms.PictureBox();
+            this.bombSelectLeft = new System.Windows.Forms.ComboBox();
+            this.bombSelectRight = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.tankRightHard)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tankLeftHard)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tankRightLight)).BeginInit();
@@ -55,7 +58,7 @@
             this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
             this.lineShape2,
             this.lineShape1});
-            this.shapeContainer1.Size = new System.Drawing.Size(1184, 462);
+            this.shapeContainer1.Size = new System.Drawing.Size(1200, 450);
             this.shapeContainer1.TabIndex = 0;
             this.shapeContainer1.TabStop = false;
             // 
@@ -110,17 +113,19 @@
             // 
             // panelPlayer_1
             // 
-            this.panelPlayer_1.Location = new System.Drawing.Point(3, 3);
+            this.panelPlayer_1.Location = new System.Drawing.Point(0, 0);
             this.panelPlayer_1.Name = "panelPlayer_1";
-            this.panelPlayer_1.Size = new System.Drawing.Size(450, 450);
+            this.panelPlayer_1.Size = new System.Drawing.Size(500, 450);
             this.panelPlayer_1.TabIndex = 4;
+            this.panelPlayer_1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelPlayer_1_MouseUp);
             // 
-            // panel1
+            // panelPlayer_2
             // 
-            this.panel1.Location = new System.Drawing.Point(722, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(450, 450);
-            this.panel1.TabIndex = 5;
+            this.panelPlayer_2.Location = new System.Drawing.Point(700, 0);
+            this.panelPlayer_2.Name = "panelPlayer_2";
+            this.panelPlayer_2.Size = new System.Drawing.Size(500, 450);
+            this.panelPlayer_2.TabIndex = 5;
+            this.panelPlayer_2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelPlayer_2_MouseUp);
             // 
             // tankRightHard
             // 
@@ -172,24 +177,53 @@
             this.tankLeftLight.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tank_MouseMove);
             this.tankLeftLight.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tank_MouseUp);
             // 
+            // bombSelectLeft
+            // 
+            this.bombSelectLeft.FormattingEnabled = true;
+            this.bombSelectLeft.Location = new System.Drawing.Point(517, 113);
+            this.bombSelectLeft.Name = "bombSelectLeft";
+            this.bombSelectLeft.Size = new System.Drawing.Size(76, 21);
+            this.bombSelectLeft.TabIndex = 6;
+            // 
+            // bombSelectRight
+            // 
+            this.bombSelectRight.FormattingEnabled = true;
+            this.bombSelectRight.Location = new System.Drawing.Point(609, 113);
+            this.bombSelectRight.Name = "bombSelectRight";
+            this.bombSelectRight.Size = new System.Drawing.Size(76, 21);
+            this.bombSelectRight.TabIndex = 7;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(575, 97);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(52, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Снаряды";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 462);
+            this.ClientSize = new System.Drawing.Size(1200, 450);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.bombSelectRight);
+            this.Controls.Add(this.bombSelectLeft);
             this.Controls.Add(this.tankRightLight);
             this.Controls.Add(this.tankRightHard);
             this.Controls.Add(this.tankLeftHard);
             this.Controls.Add(this.tankLeftLight);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panelPlayer_2);
             this.Controls.Add(this.panelPlayer_1);
             this.Controls.Add(this.labelScore);
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonNewGame);
             this.Controls.Add(this.shapeContainer1);
+            this.MaximumSize = new System.Drawing.Size(1216, 489);
+            this.MinimumSize = new System.Drawing.Size(1216, 489);
             this.Name = "Form1";
             this.Text = "Land of Tanks";
-            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tankRightHard)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tankLeftHard)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tankRightLight)).EndInit();
@@ -208,11 +242,14 @@
         private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.Label labelScore;
         private System.Windows.Forms.Panel panelPlayer_1;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panelPlayer_2;
         private System.Windows.Forms.PictureBox tankLeftLight;
         private System.Windows.Forms.PictureBox tankRightHard;
         private System.Windows.Forms.PictureBox tankLeftHard;
         private System.Windows.Forms.PictureBox tankRightLight;
+        private System.Windows.Forms.ComboBox bombSelectLeft;
+        private System.Windows.Forms.ComboBox bombSelectRight;
+        private System.Windows.Forms.Label label1;
     }
 }
 
