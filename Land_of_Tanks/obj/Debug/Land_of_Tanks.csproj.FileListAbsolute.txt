@@ -1,0 +1,17 @@
+H:\ИГРА\Land_of_Tanks\Land_of_Tanks\bin\Debug\Land_of_Tanks.exe.config
+H:\ИГРА\Land_of_Tanks\Land_of_Tanks\bin\Debug\Land_of_Tanks.exe
+H:\ИГРА\Land_of_Tanks\Land_of_Tanks\bin\Debug\Land_of_Tanks.pdb
+H:\ИГРА\Land_of_Tanks\Land_of_Tanks\obj\Debug\Land_of_Tanks.csprojResolveAssemblyReference.cache
+H:\ИГРА\Land_of_Tanks\Land_of_Tanks\obj\Debug\Land_of_Tanks.Form1.resources
+H:\ИГРА\Land_of_Tanks\Land_of_Tanks\obj\Debug\Land_of_Tanks.Properties.Resources.resources
+H:\ИГРА\Land_of_Tanks\Land_of_Tanks\obj\Debug\Land_of_Tanks.csproj.GenerateResource.Cache
+H:\ИГРА\Land_of_Tanks\Land_of_Tanks\obj\Debug\Land_of_Tanks.exe
+H:\ИГРА\Land_of_Tanks\Land_of_Tanks\obj\Debug\Land_of_Tanks.pdb
+D:\git\wargame\Land_of_Tanks\bin\Debug\Land_of_Tanks.exe.config
+D:\git\wargame\Land_of_Tanks\obj\Debug\Land_of_Tanks.exe
+D:\git\wargame\Land_of_Tanks\obj\Debug\Land_of_Tanks.pdb
+D:\git\wargame\Land_of_Tanks\bin\Debug\Land_of_Tanks.exe
+D:\git\wargame\Land_of_Tanks\bin\Debug\Land_of_Tanks.pdb
+D:\git\wargame\Land_of_Tanks\obj\Debug\Land_of_Tanks.Form1.resources
+D:\git\wargame\Land_of_Tanks\obj\Debug\Land_of_Tanks.Properties.Resources.resources
+D:\git\wargame\Land_of_Tanks\obj\Debug\Land_of_Tanks.csproj.GenerateResource.Cache
