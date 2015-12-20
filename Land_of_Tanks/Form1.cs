@@ -41,20 +41,20 @@ namespace Land_of_Tanks
             player2.AddObserver(new LightTank(this, "right"));
 
             //Бомбы для левого героя
-            player1.AddBomb(new SmallBomb("S1L"));
-            player1.AddBomb(new SmallBomb("S2"));
-            player1.AddBomb(new SmallBomb("S3"));
-            player1.AddBomb(new MiddleBomb("M1"));
-            player1.AddBomb(new MiddleBomb("M2"));
-            player1.AddBomb(new LargeBomb("L1"));
+            player1.AddBomb(new SmallBomb("lS1"));
+            player1.AddBomb(new SmallBomb("lS2"));
+            player1.AddBomb(new SmallBomb("lS3"));
+            player1.AddBomb(new MiddleBomb("lM1"));
+            player1.AddBomb(new MiddleBomb("lM2"));
+            player1.AddBomb(new LargeBomb("lL1"));
 
             //Бомбы для правого героя
-            player2.AddBomb(new SmallBomb("S1R"));
-            player2.AddBomb(new SmallBomb("S2"));
-            player2.AddBomb(new SmallBomb("S3"));
-            player2.AddBomb(new MiddleBomb("M1"));
-            player2.AddBomb(new MiddleBomb("M2"));
-            player2.AddBomb(new LargeBomb("L1"));
+            player2.AddBomb(new SmallBomb("rS1"));
+            player2.AddBomb(new SmallBomb("rS2"));
+            player2.AddBomb(new SmallBomb("rS3"));
+            player2.AddBomb(new MiddleBomb("rM1"));
+            player2.AddBomb(new MiddleBomb("rM2"));
+            player2.AddBomb(new LargeBomb("rL1"));
 
             //Добавляем бомбы в списки
             foreach (Bomb item in player1.GetBombs())
@@ -103,15 +103,53 @@ namespace Land_of_Tanks
 
         private void panelPlayer_1_MouseUp(object sender, MouseEventArgs e)
         {
-            Random tempRand = new Random();
             int shotX = (1200 / 2) + Math.Abs((1200 / 2) - e.X);
             int shotY = e.Y;
 
-            foreach (CombatUnit unit in player2.GetList())
+            HandlerShot(player2, shotX, shotY);
+        }
+
+        private void panelPlayer_2_MouseUp(object sender, MouseEventArgs e)
+        {
+            int shotX = (1200 / 2) - Math.Abs((1200 / 2) - (e.X + 700));
+            int shotY = e.Y;
+
+            HandlerShot(player1, shotX, shotY);
+
+        }
+
+        public void tank_LocationChanged(object sender, EventArgs e)
+        {
+            PictureBox tempPB = sender as PictureBox;
+            foreach (Vehicle heroItem in player1.GetList())
             {
-                if (unit is Vehicle)
+                if (tempPB == heroItem.Item)
                 {
-                    PictureBox tempUnit = (unit as Vehicle).Item;
+                    heroItem.Title.Location = tempPB.Location;
+                    return;
+                }
+            }
+            foreach (Vehicle heroItem in player2.GetList())
+            {
+                if (tempPB == heroItem.Item)
+                {
+                    //currentVehicle = heroItem;
+                    heroItem.Title.Location = tempPB.Location;
+                    break;
+                }
+            }
+        }
+
+        private void HandlerShot(Hero player, int shotX, int shotY)
+        {
+            Random tempRand = new Random();
+            Track(new Point(shotX, shotY));
+
+            foreach (CombatUnit tank in player.GetList())
+            {
+                if (tank is Vehicle)
+                {
+                    PictureBox tempUnit = (tank as Vehicle).Item;
                     int locX = tempUnit.Location.X;
                     int locY = tempUnit.Location.Y;
                     int sizX = tempUnit.Width;
@@ -120,18 +158,60 @@ namespace Land_of_Tanks
                     //Проверка на попадание
                     if ((shotX >= locX && shotX <= locX + sizX) && (shotY >= locY && shotY <= locY + sizY))
                     {
-                        if (bombSelectLeft.SelectedItem != null)
+                        bool check = false;
+                        Bomb item = null;
+                        if (player is LeftHero && bombSelectRight.SelectedItem != null)
                         {
-                            Bomb item = bombSelectLeft.SelectedItem as Bomb;
+                            check = true;
+                            item = bombSelectRight.SelectedItem as Bomb;
+                        }
+                        else if (player is RightHero && bombSelectLeft.SelectedItem != null)
+                        {
+                            check = true;
+                            item = bombSelectLeft.SelectedItem as Bomb;
+                        }
+
+                        if (check)
+                        {
+                            int totalDamage = item.damage;
+                            foreach (Warrior unit in (tank as Vehicle).Items)
+                            {
+                                if (!unit.killed)
+                                {
+                                    if (unit.hp <= totalDamage)
+                                    //if (totalDamage - unit.Damage() >= 0)
+                                    {
+                                        totalDamage -= unit.Damage();
+                                        unit.killed = true;
+                                    }
+                                    else
+                                    {
+                                        
+                                        unit.hp -= totalDamage;
+                                        totalDamage = 0;
+                                    }
+                                }
+                            }
 
                             //Проверка на полное уничтожение
-                            if (unit.Damage() < item.damage)
+                            if (tank.Damage() <= totalDamage)
                             {
-                                (unit as Vehicle).killed = true;
+                                (tank as Vehicle).killed = true;
                                 tempUnit.BackColor = Color.Red;
-                                player2.NotifyObserver();
+
+                                if (player is LeftHero)
+                                {
+                                   (player as LeftHero).NotifyObserver();
+                                }
+                                else if (player is RightHero)
+                                {
+                                    (player as RightHero).NotifyObserver();
+                                }
+
                             }
                         }
+
+                        (tank as Vehicle).Title.Text = (tank as Vehicle).Damage().ToString();
 
                         return;
                     }
@@ -139,42 +219,23 @@ namespace Land_of_Tanks
             }
         }
 
-        private void panelPlayer_2_MouseUp(object sender, MouseEventArgs e)
+        private void Track(Point p)
         {
-            Random tempRand = new Random();
-            int shotX = (1200 / 2) - Math.Abs((1200 / 2) - (e.X + 700));
-            int shotY = e.Y;
+            PictureBox Item = new System.Windows.Forms.PictureBox();
+            Item.BackColor = Color.Black;
 
-            foreach (CombatUnit unit in player1.GetList())
-            {
-                if (unit is Vehicle)
-                {
-                    PictureBox tempUnit = (unit as Vehicle).Item;
-                    int locX = tempUnit.Location.X;
-                    int locY = tempUnit.Location.Y;
-                    int sizX = tempUnit.Width;
-                    int sizY = tempUnit.Height;
+            Item.Location = p;
 
-                    //Проверка на попадание
-                    if ((shotX >= locX && shotX <= locX + sizX) && (shotY >= locY && shotY <= locY + sizY))
-                    {
-                        if (bombSelectRight.SelectedItem != null)
-                        {
-                            Bomb item = bombSelectRight.SelectedItem as Bomb;
+            Item.Name = "Shot";
+            Item.Size = new System.Drawing.Size(5, 5);
+            Item.TabStop = false;
 
-                            //Проверка на полное уничтожение
-                            if (unit.Damage() < item.damage)
-                            {
-                                (unit as Vehicle).killed = true;
-                                tempUnit.BackColor = Color.Red;
-                                player1.NotifyObserver();
-                            }
-                        }
+            Item.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tank_MouseDown);
+            Item.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tank_MouseMove);
+            Item.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tank_MouseUp);
 
-                        return;
-                    }
-                }
-            }
+            this.Controls.Add(Item);
+            Item.BringToFront();
         }
     }
 
@@ -221,7 +282,7 @@ namespace Land_of_Tanks
     public class LeftHero : Hero
     {
         protected static LeftHero instance;
-  
+
         public static LeftHero Instance()
         {
             if (instance != null)
@@ -301,7 +362,14 @@ namespace Land_of_Tanks
         public int hp;
         public int Damage()
         {
-            return hp;
+            if (!killed)
+            {
+                return hp;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 
@@ -313,118 +381,155 @@ namespace Land_of_Tanks
     public abstract class Vehicle : CombatUnit
     {
         public PictureBox Item = new System.Windows.Forms.PictureBox();
+        public Label Title = new Label();
         public Form1 Form;
         public List<Warrior> Items = new List<Warrior>();
+        public string flank;
+        protected Color bg;
+        protected bool stop = false;
 
         public new int Damage()
         {
-            int total = hp;
+            if (!killed)
+            {
+                int total = hp;
+
+                foreach (CombatUnit component in Items)
+                {
+                    total += component.Damage();
+                }
+
+                return total;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public void Reposition(Point point)
+        {
+            int total = 0;
 
             foreach (CombatUnit component in Items)
             {
                 total += component.Damage();
             }
 
-            return total;
-        }
+            if (total == 0)
+            {
+                stop = true;
+            }
 
-        public void Reposition(Point point)
-        {
-            if (!killed)
+            if (!killed && !stop)
             {
                 Item.Location = point;
             }
+        }
+
+        protected void show(Size size)
+        {
+            if (flank.Equals("right"))
+            {
+                Item.Location = new System.Drawing.Point(640, 250 - 100);
+            }
+            else if (flank.Equals("left"))
+            {
+                Item.Location = new System.Drawing.Point(517, 250 - 100);
+            }
+            Item.BackColor = bg;
+            Item.Name = "Vehicle";
+            Item.Size = size;
+            Item.TabStop = false;
+
+            Item.MouseDown += new System.Windows.Forms.MouseEventHandler(Form.tank_MouseDown);
+            Item.MouseMove += new System.Windows.Forms.MouseEventHandler(Form.tank_MouseMove);
+            Item.MouseUp += new System.Windows.Forms.MouseEventHandler(Form.tank_MouseUp);
+            Item.LocationChanged += new System.EventHandler(Form.tank_LocationChanged);
+
+            Form.Controls.Add(Item);
+            Item.BringToFront();
+
+            Title.Text = Damage().ToString();
+            Title.Location = Item.Location;
+            Title.BackColor = System.Drawing.Color.Transparent;
+            Title.BackColor = System.Drawing.Color.White;
+            Title.Width = 13;
+            Title.Height = 13;
+            Form.Controls.Add(Title);
+            Title.BringToFront();
         }
     }
 
     public class Lieutenant : Warrior
     {
-
+        public Lieutenant()
+        {
+            hp = 1;
+        }
     }
 
     public class Captain : Warrior
     {
-
+        public Captain()
+        {
+            hp = 2;
+        }
     }
 
     public class Maj : Warrior
     {
-
+        public Maj()
+        {
+            hp = 3;
+        }
     }
 
     public class LightTank : Vehicle
     {
-        public LightTank(Form1 parrentForm, string flank)
+
+        public LightTank(Form1 parrentForm, string flankLoc)
         {
             hp = 2;
             Form = parrentForm;
-            Item.BackColor = Color.Aqua;
-
-            if (flank.Equals("right"))
+            flank = flankLoc;
+            if (flank.Equals("left"))
             {
-                Item.Location = new System.Drawing.Point(640, 250 - 100);
+                bg = Color.Green;
             }
-            else
+            else if (flank.Equals("right"))
             {
-                Item.Location = new System.Drawing.Point(517, 250 - 100);
+                bg = Color.Blue;
             }
-            Item.Name = "tankRightLight";
-            Item.Size = new System.Drawing.Size(45, 35);
-            Item.TabStop = false;
 
-            Item.MouseDown += new System.Windows.Forms.MouseEventHandler(Form.tank_MouseDown);
-            Item.MouseMove += new System.Windows.Forms.MouseEventHandler(Form.tank_MouseMove);
-            Item.MouseUp += new System.Windows.Forms.MouseEventHandler(Form.tank_MouseUp);
+            Items.Add(new Lieutenant());
+            Items.Add(new Maj());
 
-            parrentForm.Controls.Add(Item);
-            Item.BringToFront();
-        }
-
-        public void Reposition()
-        {
-            if (!killed)
-            {
-                Random tempRand = new Random();
-                Item.Location = new Point(tempRand.Next(10, 400), tempRand.Next(11, 400));
-            }
+            show(new Size(45, 35));
         }
     }
 
     public class HeavyTank : Vehicle
     {
-        public HeavyTank(Form1 parrentForm, string flank)
+        public HeavyTank(Form1 parrentForm, string flankLoc)
         {
             hp = 3;
             Form = parrentForm;
-            Item.BackColor = Color.Azure;
-            if (flank.Equals("right"))
+            flank = flankLoc;
+            if (flank.Equals("left"))
             {
-                Item.Location = new System.Drawing.Point(640, 250 - 100);
+                bg = Color.Brown;
             }
-            else
+            else if (flank.Equals("right"))
             {
-                Item.Location = new System.Drawing.Point(517, 250 - 100);
+                bg = Color.Orange;
             }
 
-            Item.Name = "tankRightHard";
-            Item.Size = new System.Drawing.Size(51, 37);
-            Item.TabStop = false;
+            Items.Add(new Lieutenant());
+            Items.Add(new Captain());
+            Items.Add(new Maj());
 
-            Item.MouseDown += new System.Windows.Forms.MouseEventHandler(Form.tank_MouseDown);
-            Item.MouseMove += new System.Windows.Forms.MouseEventHandler(Form.tank_MouseMove);
-            Item.MouseUp += new System.Windows.Forms.MouseEventHandler(Form.tank_MouseUp);
-
-            parrentForm.Controls.Add(Item);
-            Item.BringToFront();
-        }
-
-        public void Reposition()
-        {
-            if (!killed)
-            {
-                Random tempRand = new Random();
-                Item.Location = new Point(tempRand.Next(10, 400), tempRand.Next(11, 400));
-            }
+            show(new Size(51, 37));
         }
     }
 
@@ -440,31 +545,34 @@ namespace Land_of_Tanks
 
         public override string ToString()
         {
-            return name;
+            return name + ":" + damage;
         }
     }
 
     public class SmallBomb : Bomb
     {
-        public SmallBomb(string nameValue) : base(nameValue)
-        {
-            damage = 1;
-        }
-    }
-
-    public class MiddleBomb : Bomb
-    {
-        public MiddleBomb(string nameValue) : base(nameValue)
+        public SmallBomb(string nameValue)
+            : base(nameValue)
         {
             damage = 2;
         }
     }
 
+    public class MiddleBomb : Bomb
+    {
+        public MiddleBomb(string nameValue)
+            : base(nameValue)
+        {
+            damage = 4;
+        }
+    }
+
     public class LargeBomb : Bomb
     {
-        public LargeBomb(string nameValue) : base(nameValue)
+        public LargeBomb(string nameValue)
+            : base(nameValue)
         {
-            damage = 3;
+            damage = 6;
         }
     }
 }
